@@ -40,10 +40,11 @@ jobs:
           CREWAI_TELEMETRY_OPT_OUT: "true"
           LITELLM_TELEMETRY: "False"
         run: |
-          set +e
-          timeout 60 pytest tests/unit/ -v --tb=short
-          code=$?
-          [ $code -eq 124 ] && exit 0 || exit $code
+          python -c "
+          import subprocess, os
+          r = subprocess.run(['pytest', 'tests/unit/', '-v', '--tb=short'])
+          os._exit(r.returncode)
+          "
 
       - name: Integration tests
         env:
@@ -51,7 +52,8 @@ jobs:
           CREWAI_TELEMETRY_OPT_OUT: "true"
           LITELLM_TELEMETRY: "False"
         run: |
-          set +e
-          timeout 120 pytest tests/integration/ -v --tb=short
-          code=$?
-          [ $code -eq 124 ] && exit 0 || exit $code
+          python -c "
+          import subprocess, os
+          r = subprocess.run(['pytest', 'tests/integration/', '-v', '--tb=short'])
+          os._exit(r.returncode)
+          "
